@@ -1,0 +1,48 @@
+.ui {
+  height: 100%;
+}
+
+.new{
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  z-index: 9999;
+}
+
+.filter {
+  width: 50%;
+  /*display: grid;*/
+  /* Создает максимально возможное число колонок шириной не менее 200px */
+  /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+  /*gap: 10px;*/
+}
+
+.kanban {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.kanban__folders {
+  display: grid;
+  /* Создает максимально возможное число колонок шириной не менее 200px */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2px;
+}
+
+.kanban__folder_title {
+  text-align: center;
+}
+
+.kanban__content {
+  flex-grow: 1;       /* Растягиваться и занимать всю свободную высоту */
+  min-height: 0px;    /* Критически важно для корректного скролла во Flexbox */
+  overflow-y: auto;   /* Включаем прокрутку */
+}
+
+.kanban__project_title {
+  background-color: cadetblue;
+  color: white;
+  text-align: left;
+  font-size: 14pt;
+}

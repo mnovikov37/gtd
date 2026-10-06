@@ -1,0 +1,22 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    
+}
+
+
+html {
+    height: 95%;
+}
+
+body {
+    height: 100%;
+}
+
+input, 
+textarea, 
+button, 
+select {
+  font:  inherit;
+  color: inherit;
+}

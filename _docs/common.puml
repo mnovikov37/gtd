@@ -1,0 +1,34 @@
+@startuml common
+
+<style>
+sequenceDiagram {
+  participant, collections {
+    Padding 2
+  }
+  arrow {
+    ' Выравнивание текста сообщения по центру стрелки
+    HorizontalAlignment center
+    MaximumWidth 1
+  }
+  .request {
+    LineColor DarkViolet
+    FontColor DarkViolet
+  }
+  .link {
+    LineColor Blue
+    FontColor Blue
+  }
+  .data {
+    LineColor Green
+    FontColor Green
+  }
+  .event {
+    LineColor Red
+    FontColor Red
+  }
+}
+</style>
+
+skinparam maxMessageSize 200
+
+@enduml

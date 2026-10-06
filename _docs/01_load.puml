@@ -1,0 +1,49 @@
+@startuml 01_load
+
+title "Запуск"
+
+!include common.puml
+
+actor User as User
+participant Loader as Loader
+participant "<Item>" as Item
+participant "Goal\nextends\n<Item>" as Goal
+participant "Project\nextends\n<Item>" as Project
+participant UI as UI
+box "<body>"
+  participant Menu as Menu
+  participant content as content
+end box
+collections Контенты as contents
+
+== Загрузить дамп ==
+
+User -> Loader <<link>> : file
+Loader -> Loader : parseJsonFile(file) => .data
+
+Loader -> Goal <<Link>> : Goal.set(.data.GOALS)
+loop .data.GOALS as g
+  Goal -> Goal : Goal.pool += new Goal(g)
+end
+
+Loader -> Project <<Link>> : Project.set(.data.TASKS.filter(TYPE == PROJECT))
+loop ..data.TASKS.filter(TYPE == PROJECT) as p
+  Project -> Project : Project.pool += new Project(p)
+end
+
+== Создать пользовательский интерфейс ==
+
+Loader -> UI ++
+UI -> Menu ++ <<data>> : пункты
+UI -> contents : создать контент по умолчанию
+contents -> UI <<link>> : контент по умолчанию
+UI -> content ++ <<link>> : контент по умолчанию
+
+== Переключение контентов через меню ==
+
+User -> Menu : клик
+Menu-> UI <<event>> : пункт
+UI -> contents : создать контент по пункту
+contents -> UI <<link>> : контент по пункту
+UI -> content <<link>> : контент по пункту
+@enduml

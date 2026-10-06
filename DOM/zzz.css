@@ -1,0 +1,24 @@
+.field {
+  margin: 2px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  font-size: 75%;
+}
+
+.field p {
+  text-align: right;
+}
+
+.field input {
+  /*font-size: 14px;*/
+}
+
+.field select {
+  width: 100%;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-family: monospace;
+  /*font-size: 14px;*/
+}
