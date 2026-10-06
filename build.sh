@@ -1,7 +1,7 @@
 #!/bin/bash
 VERSION="1.0.0"
 
-output="index"
+output="out/index"
 list="__build.lst"
 
 # Добавление исходного кода в выходной файл проекта
