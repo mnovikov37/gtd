@@ -20,3 +20,7 @@ select {
   font:  inherit;
   color: inherit;
 }
+
+.ui {
+  height: 100%;
+}

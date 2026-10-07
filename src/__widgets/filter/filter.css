@@ -1,0 +1,7 @@
+.filter {
+  width: 50%;
+  /*display: grid;*/
+  /* Создает максимально возможное число колонок шириной не менее 200px */
+  /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+  /*gap: 10px;*/
+}

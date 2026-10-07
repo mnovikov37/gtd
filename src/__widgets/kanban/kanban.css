@@ -1,22 +1,3 @@
-.ui {
-  height: 100%;
-}
-
-.new{
-  position: fixed;
-  top: 50px;
-  left: 50px;
-  z-index: 9999;
-}
-
-.filter {
-  width: 50%;
-  /*display: grid;*/
-  /* Создает максимально возможное число колонок шириной не менее 200px */
-  /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
-  /*gap: 10px;*/
-}
-
 .kanban {
   height: 100%;
   display: flex;

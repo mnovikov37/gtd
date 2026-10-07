@@ -1,0 +1,6 @@
+.new{
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  z-index: 9999;
+}
