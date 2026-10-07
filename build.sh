@@ -38,12 +38,13 @@ process_file() {
     local first_line
     first_line=$(head -n 1 "$file_path")
 
-    # Проверяем, содержит ли первая строка ключевое слово @build-ignore
-    if [[ "$first_line" == *"@build-ignore"* ]]; then
-        # Извлекаем текст комментария без пробелов
+    # Используем регулярное выражение =~ для поиска @build-ignore и захвата текста после него
+    if [[ "$first_line" =~ @build-ignore[[:space:]]*(.*) ]]; then
+        # Извлекаем текст комментария (все, что идет после @build-ignore)
         local comment_text="${BASH_REMATCH[1]}"
-        # Убираем возможные лишние пробелы на концах
-        comment_text=$(echo "$comment_text" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        
+        # Удаляем пробелы на концах строки (если они остались)
+        comment_text=$(echo "$comment_text" | xargs)
         
         echo "ignored: $file_path: $comment_text"
         return
