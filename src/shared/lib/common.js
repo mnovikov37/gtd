@@ -51,3 +51,20 @@ function nowWithMs() {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
+
+/**
+ * Универсальный метод для создания цепочек вызовов на любых HTML-элементах.
+ * @param {Function|string} fn - Функция или имя метода самого элемента (например, 'append' или 'setAttribute')
+ * @param {...*} args - Любые аргументы, которые нужно передать в функцию
+ * @returns {HTMLElement} - Возвращает сам элемент (this)
+ */
+HTMLElement.prototype.chain = function(fn, ...args) {
+  if (typeof fn === 'string') {
+    // Если передано имя нативного метода (например, 'append')
+    this[fn](...args);
+  } else if (typeof fn === 'function') {
+    // Если передана посторонняя функция, выполняем её в контексте этого элемента
+    fn.call(this, ...args);
+  }
+  return this;
+};

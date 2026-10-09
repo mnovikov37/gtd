@@ -7,7 +7,7 @@ class Menu {
     this.ui = new E('div');
 
     this.current = current;
-
+    /*
     items.forEach(item => {
       this.ui.append(new E('button').set({ textContent : item.text }).addEventListener('click', (e) => {
         if (this.current !== item.signal || item.repeat) {
@@ -20,7 +20,7 @@ class Menu {
         }
       }));
     });
-
+    */
   }
 
 }

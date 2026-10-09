@@ -36,8 +36,10 @@ class Filter extends DOMElement {
   }
 
   updateUI() {
+    /*
     this.ui.goal.field.setOptions(Goal.selectOptions, this.filter.goal);
     this.ui.project.field.setOptions(Project.selectOptions, this.filter.project);
     this.ui.context.field.setOptions(Context.selectOptions, this.filter.context);
+    */
   }
 }

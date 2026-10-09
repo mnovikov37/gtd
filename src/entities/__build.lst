@@ -1,0 +1,27 @@
+# 1. Базовые абстракции (самый фундамент)
+base/item.model.js
+base/item.view.js
+base/task-attribute.model.js
+base/task-attribute.view.js
+base/task-template.model.js
+base/task-template.view.js
+
+# 2. Справочники и атрибуты задач
+folder/folder.model.js
+folder/folder.view.js
+context/context.model.js
+context/context.view.js
+priority/priority.model.js
+priority/priority.view.js
+goal/goal.model.js
+goal/goal.view.js
+project/project.model.js
+project/project.view.js
+
+# 3. Конечные бизнес-сущности (зависимые от базовых классов и атрибутов)
+task/task.model.js
+task/task.view.js
+task/checklist.model.js
+task/checklist.view.js
+task/checklist-item.model.js
+task/checklist-item.view.js

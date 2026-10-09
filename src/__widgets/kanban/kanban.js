@@ -52,15 +52,25 @@ class Kanban extends DOMElement {
         result.append(new E('p').set({ textContent : dueDate === "" ? "Без даты" : dueDate }));
         currentDate = dueDate;
       }
-      result.append(task.render());
+      let viewElement;
+      if (taskModel.data.TYPE === ChecklistModel.TYPE) {
+        viewElement = new ChecklistView(taskModel);
+      } else {
+        viewElement = new TaskView(taskModel);
+      }
+      // viewElement — это чистый HTMLElement, пушим напрямую в DOM
+      result.append(viewElement);
     });
-
+ 
     return result;
   }
 
   renderFolders(tasks) {
+    console.log(tasks);
     const result = new E('div').addClass('kanban__folders');
     this.constructor.FOLDERS.forEach(folder => {
+      console.log(Folder.filterCondition(folder.ID));
+      console.log(filterMap(tasks, [Folder.filterCondition(folder.ID)]));
       result.append(this.renderFolder(filterMap(tasks, [Folder.filterCondition(folder.ID)])));
     });
     return result;
@@ -68,10 +78,12 @@ class Kanban extends DOMElement {
 
   renderFoldersFromAttributes(tasks, attrs) {
     const conditions = [];
+    /*
     if (attrs.goal) { conditions.push(Goal.filterCondition(attrs.goal)); }
     if (attrs.project) { conditions.push(Project.filterCondition(attrs.project)); }
     if (attrs.context) { conditions.push(Context.filterCondition(attrs.context)); }
-    const result = this.renderFolders(filterMap(tasks, conditions));
+    */
+    const result = this.renderFolders(tasks);
     return result;
   }
 
@@ -88,6 +100,7 @@ class Kanban extends DOMElement {
     }
     if (f.context !== Select.OPTION_ANY__VALUE) conditions.push(Context.filterCondition(f.context));        // Контексты сущность НЕ иерархическая
     const tasks = new Map([...Task.filter(conditions), ...Checklist.filter(conditions)]);
+    console.log(tasks);
     this.ui.content.append(new E('p').addClass('kanban__project_title').set({ textContent : optionProject?.title }));
     const foldersUi = this.renderFoldersFromAttributes(tasks, { project : optionProject?.value });
     this.ui.content.append(foldersUi);
