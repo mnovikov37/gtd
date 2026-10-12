@@ -1,2 +1,3 @@
 out/
 docs/
+src/__app/test-loader.js
