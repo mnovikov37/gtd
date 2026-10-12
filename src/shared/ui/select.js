@@ -1,3 +1,4 @@
+// @build-ignore
 class Select extends E {
   /**
    * Структура опций:
