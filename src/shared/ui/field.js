@@ -1,20 +1,48 @@
-class Field extends E {
+/**
+ * ----------------------------------------
+ * Поле: любой HTML элемент + текстовое пояснение к нему:
+ *  ┌─────────┬───────┐
+ *  │ title : │ field │
+ *  └─────────┴───────┘
+ * Может не содержать никакого элемента. В таком случае вместо field будет отображаться абзац с текстом "[null]":
+ *  ┌─────────┬────────┐
+ *  │ title : │ [null] │
+ *  └─────────┴────────┘
+ * ----------------------------------------
+ * Что может:
+ *  - setTitle(title)       - изменить пояснение
+ *  - setField(field)       - заменить вложенный элемент на новый
+ *  - setCustomValidity(v)  - задать кастомную валидацию для вложенного элемента
+ *  - reportValidity()      - валидация данных, введённых пользователем во вложенный элемент
+ *  - value()               - получить value вложенного элемента
+ */
+class Field extends HTMLElement {
 
   title;
   field;
 
   constructor(title, field = null) {
-    super('div');
+    super();
 
-    this.addClass('field');
-    this.title = new E('p').set({ textContent : `${title} :` });
-    this.field = field ? field : new E('p').set({ textContent : '[ null ]' });
+    this.classList.add('field');
+    this.title = document.createElement('p');
+    this.title.textContent =  `${title} :`;
+    this.append(this.title);
+    this.field = field ? field : document.createElement('p');
+    if (!field) {
+      this.field.textContent = '[null]';
+    }
     this.append(this.title, this.field);
   }
 
   setTitle(title) {
     this.title.set({ textContent : `${title} :` });
-    return this;
+  }
+
+  setField(field) {
+    this.field.remove();
+    this.field = field;
+    this.append(this.field);
   }
 
   setCustomValidity(v) {
@@ -26,14 +54,10 @@ class Field extends E {
   }
 
   value() {
-    return this.field instanceof E ? this.field.get('value') : this.field.value;
-  }
-
-  setField(field) {
-    this.field.remove();
-    this.field = field;
-    this.append(this.field);
-    return this;
+    return this.field.value;
   }
 
 }
+
+// Регистрация нативного кастомного элемента
+customElements.define('my-field', Field);
