@@ -1,3 +1,4 @@
+// @build-ignore
 class Filter extends DOMElement {
   filter;
   event;

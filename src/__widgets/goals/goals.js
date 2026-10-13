@@ -1,3 +1,4 @@
+// @build-ignore
 class Goals extends DOMElement{
   updateUI() {
     Goal.poolHrc.forEach(goal => {

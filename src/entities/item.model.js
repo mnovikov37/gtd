@@ -7,7 +7,7 @@ class Item {
   dataExt; // Дополнительные рантайм-данные приложения. В дамп не идут
 
   // Заполнение пула объектов из исходного дампа
-  static set(source) {
+  static initPool(source) {
     this.maxId = 0;
     this.poolFlat = new Map();
     source.forEach((data) => {

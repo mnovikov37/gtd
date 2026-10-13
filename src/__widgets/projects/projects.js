@@ -1,3 +1,4 @@
+// @build-ignore
 class Projects extends DOMElement{
   updateUI() {
     Project.poolHrc.forEach(project => {
