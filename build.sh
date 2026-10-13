@@ -29,6 +29,7 @@ format_file_header() {
 # Функция обработки одиночного файла с проверкой на ignore
 process_file() {
     local file_path="$1"
+    echo $file_path
     
     # Пропускаем сам index.html, чтобы он не попал в бандлы
     [[ "$file_path" == *"/app/index.html" ]] && return
@@ -83,12 +84,12 @@ process_directory() {
         done < "$list_file"
     else
         # === Логика 2: Файла __build.lst НЕТ ===
-        for file in $(find "$dir_path" -maxdepth 1 -type f | sort); do
+        for file in $(find "$dir_path" -maxdepth 1 -type f | LC_ALL=C sort -r); do
             [[ "$(basename "$file")" =~ ^\. ]] && continue
             process_file "$file"
         done
 
-        for subdir in $(find "$dir_path" -maxdepth 1 -type d | sort); do
+        for subdir in $(find "$dir_path" -maxdepth 1 -type d | LC_ALL=C sort -r); do
             [[ "$subdir" == "$dir_path" || "$(basename "$subdir")" =~ ^\. ]] && continue
             process_directory "$subdir"
         done
