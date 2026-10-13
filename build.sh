@@ -29,7 +29,6 @@ format_file_header() {
 # Функция обработки одиночного файла с проверкой на ignore
 process_file() {
     local file_path="$1"
-    echo $file_path
     
     # Пропускаем сам index.html, чтобы он не попал в бандлы
     [[ "$file_path" == *"/app/index.html" ]] && return
@@ -110,7 +109,7 @@ if [ -d "$SRC_DIR" ]; then
         echo "Предупреждение: Главный HTML-файл не найден по пути $HTML_SRC!"
     fi
 
-    echo "Сборка успешно завершена!"
+    echo "Сборка успешно завершена"
     echo "Создано: $OUTPUT_JS"
     echo "Создано: $OUTPUT_CSS"
 else
