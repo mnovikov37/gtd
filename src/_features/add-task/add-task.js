@@ -1,4 +1,4 @@
-// @build-ignore
+// @build-ignore Игнорировать до поры
 class AddTask extends DOMElement{
   static TYPE = 0;
   static DATA = {

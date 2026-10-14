@@ -1,3 +1,4 @@
+// @build-prod Файл для продакшен-версии
 class Loader {
 
   static data;
