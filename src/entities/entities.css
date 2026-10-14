@@ -1,4 +1,5 @@
-.item {
+details.item {
+  display: block;
   max-width: 500px;
   margin-top: 1px;
   margin-bottom: 1px;
@@ -11,13 +12,19 @@
   background-color:beige;
 }
 
-.item__header {
-  /*margin: 2px;*/
+details.item > summary {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-areas:  "ch tl tl tl tl tl tl tl tl tl sv dl"
                         "ni nt nt nt nt nt nt nt nt nt rm dl";
   gap: 2px;
+  cursor: pointer;
+  list-style: none; /* Убирает дефолтный маркер в Chrome/Firefox */
+}
+
+/* Принудительное скрытие маркера в Safari */
+details.item > summary::-webkit-details-marker {
+  display: none;
 }
 
 .item__header_checked {
@@ -27,13 +34,17 @@
 
 .item__title {
   grid-area: tl;
-  border-style: none;
   padding-left: 2px;
   padding-right: 2px;
-  field-sizing: content;
-  resize: none;
   text-align: left;
 }
+
+/*
+Для note:
+white-space: nowrap; Не дает тексту переноситься, если нужен строгий однострочник
+  overflow: hidden;
+  text-overflow: ellipsis; Красивое троеточие, если заголовок слишком длинный
+*/
 
 .item__save {
   grid-area: sv;

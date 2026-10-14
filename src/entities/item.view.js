@@ -1,67 +1,65 @@
-class ItemView extends HTMLElement {
-  model; // Ссылка на связанную модель данных
+class ItemView extends HTMLDetailsElement {
+  #model = null; // Ссылка на связанную модель данных
   
-  constructor(model) {
+  // ----- Элементы UI ----- //
+  #uiTitle = null;
+  #uiDetails = null;
+  
+  constructor() {
     super();
-    this.model = model;
-
     this.classList.add('item');
-      // ----- header ----- //
-      this.header = document.createElement('div');
-      const h = this.header;
-      h.classList.add('item__header');
-        // ----- header.tl ----- //
-        this.header.tl = document.createElement('p');
-        const tl = this.header.tl;
-        tl.classList.add('item__title');
-        tl.textContent = model.data.TITLE;
-        // ----- header.expandDetails ----- //
-        this.header.expandDetails = document.createElement('button');
-        const ed = this.header.expandDetails;
-        ed.classList.add('item__details-button');
-        ed.textContent = '<';
-      h.append(tl, ed);
-    this.append(h);
-    /*
-    chain('addEventListener', 'click', () => this.toggleDetails());
-
-    header.chain('append', this.#titleElement, this.#expandButton);
-
-    // 2. Создаем контейнер деталей (по умолчанию скрыт нативно)
-    this.#detailsElement = document.createElement('div')
-      .chain(Object.assign, { hidden: true });
-
-    // Собираем карточку воедино
-    this.chain('append', header, this.#detailsElement);
-    */
+    this.addEventListener('toggle', () => {this.#handleToggle()});
   }
 
-  /*
-  // Синхронизация интерфейса с данными модели
-  updateUI() {
-    this.#titleElement.textContent = this.model.data.TITLE;
-    
-    // Обновляем стрелочку в зависимости от текущего состояния видимости
-    const isHidden = this.#detailsElement.hidden;
-    this.#expandButton.textContent = isHidden ? '◀' : '▼';
+  init(model) {
+    if (this.#model) {
+      throw new TypeError('Reinitialization is prohibited');
+    }
+    this.#model = model;
   }
 
-  // Логика отображения/скрытия подробностей
-  toggleDetails() {
-    const isHidden = this.#detailsElement.hidden;
-    this.#detailsElement.hidden = !isHidden;
-    
-    // Перерисовываем только управляющие элементы интерфейса
-    this.updateUI();
+  get model() {
+    return this.#model;
   }
 
-  // Метод для добавления вложенных полей в блок деталей (вызывается наследниками вроде TaskView)
-  appendDetail(element) {
-    this.#detailsElement.chain('append', element);
-    return this;
+  connectedCallback() {
+      this.render();
   }
-    */
+
+  render() {
+    if(!this.#model) {
+      throw new Error('Cannot render without model');
+    }
+    this.open = false;
+    this.replaceChildren();
+    this.#uiTitle = null;
+    this.#uiDetails = null;
+    // ----- summary ----- //
+    const summary = document.createElement('summary');
+    // ----- title ----- //
+    this.#uiTitle = document.createElement('p');
+    this.#uiTitle.classList.add('item__title');
+    this.#uiTitle.textContent = this.#model.data.TITLE;
+    // Собрать UI
+    summary.append(this.#uiTitle);
+    this.append(summary);
+  }
+
+  #handleToggle() {
+    if (this.#uiDetails) {
+      this.#uiDetails.remove();
+      this.#uiDetails = null;
+    }
+    if (this.open) {
+      this.#uiDetails = document.createElement('div');
+      this.renderDetails(this.#uiDetails);
+      this.append(this.#uiDetails);
+    }
+  }
+
+  renderDetails(details) {
+    details.textContent = '[ UI details ]';
+  }
 }
-
 // Регистрируем нативный кастомный элемент
-customElements.define('item-view', ItemView);
+customElements.define('item-view', ItemView, { extends : 'details' });

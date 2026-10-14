@@ -1,10 +1,13 @@
 class Item {
-  static ITEM_TYPE = 'ITEM';
-  static poolFlat = new Map(); // Хранилище объектов (аналог таблицы БД)
-  static maxId = 0;
+  static ITEM_TYPE  = 'ITEM';           // Тип сущности в дампе (сущности ITEM в дампе нет, она чисто абстрактная)
+  static VIEW__SHOW = 'item-view';      // Тег кастомного элемента HTML - интерфейса для отображения сущности
+  static VIEW__EDIT = 'item-edit-view'; // Тег кастомного элемента HTML - интерфейса для редактирования сущности
+  static poolFlat = new Map();          // Хранилище объектов (аналог таблицы БД)
+  static maxId = 0;                     // Надо помнить максимальный ID в пуле сущностей
 
-  data;    // Данные из дампа, которые пойдут обратно в дамп
-  dataExt; // Дополнительные рантайм-данные приложения. В дамп не идут
+  data;     // Данные из дампа, которые пойдут обратно в дамп
+  dataExt;  // Дополнительные рантайм-данные приложения. В дамп не идут
+  #ui;      // Пользовательский интерфейс
 
   // Заполнение пула объектов из исходного дампа
   static initPool(source) {
@@ -49,6 +52,12 @@ class Item {
   constructor(data) {
     this.data = data;
     this.dataExt = { children: new Map() };
+    this.#ui = document.createElement('details', { is: this.constructor.VIEW__SHOW });
+    this.#ui.init(this);
+  }
+
+  get ui() {
+    return this.#ui;
   }
 
 }
