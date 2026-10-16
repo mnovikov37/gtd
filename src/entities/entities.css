@@ -15,7 +15,7 @@ details.item {
 details.item > summary {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-areas:  "ch tl tl tl tl tl tl tl tl tl sv dl"
+  grid-template-areas:  "ch tl tl tl tl tl tl tl tl tl tl tl"
                         "ni nt nt nt nt nt nt nt nt nt rm dl";
   gap: 2px;
   cursor: pointer;

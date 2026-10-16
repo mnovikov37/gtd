@@ -10,7 +10,7 @@ class Item {
   #ui;      // Пользовательский интерфейс
 
   // Заполнение пула объектов из исходного дампа
-  static initPool(source) {
+  static init(source) {
     this.maxId = 0;
     this.poolFlat = new Map();
     source.forEach((data) => {
@@ -51,13 +51,22 @@ class Item {
 
   constructor(data) {
     this.data = data;
-    this.dataExt = { children: new Map() };
-    this.#ui = document.createElement('details', { is: this.constructor.VIEW__SHOW });
-    this.#ui.init(this);
+    //this.dataExt = { children: new Map() }; Возможно, переедет в ItemTree
   }
 
   get ui() {
+    if (!this.#ui) {
+      this.#ui = document.createElement('details', { is: this.constructor.VIEW__SHOW });
+      this.#ui.init(this);
+    }
     return this.#ui;
+  }
+
+  destroyUi() {
+    if (this.#ui) {
+      this.#ui.remove();
+      this.#ui = null;
+    }
   }
 
 }

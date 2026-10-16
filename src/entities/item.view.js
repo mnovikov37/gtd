@@ -58,7 +58,7 @@ class ItemView extends HTMLDetailsElement {
   }
 
   renderDetails(details) {
-    details.textContent = '[ UI details ]';
+    //details.textContent = '[ UI details ]';
   }
 }
 // Регистрируем нативный кастомный элемент
