@@ -1,6 +1,6 @@
 /**
  * ----------------------------------------
- * Обычный селект + в конструкторе можно задать:
+ * Обычный селект + можно задать:
  * - набор пунктов. Если не задан, то будут только пункты "любой" и "нет" (и то если заданы. См. ниже)
  *    Набор пунктов принимает в виде такого массива:
  *    [
@@ -14,8 +14,8 @@
  *  - если нет пункта "нет" - первым
  * ----------------------------------------
  * Что может:
- *  - setOptions(options) - заменить все пункты, кроме "любой" и "нет", на новый набор пунктов
- *  - setValue(value)     - установить выбранную величину. Если value = null - выбирается пункт "нет"
+ *  - set OptionList(options) - заменить все пункты, кроме "любой" и "нет", на новый набор пунктов
+ *  - setValue(value)         - установить выбранную величину. Если value = null - выбирается пункт "нет"
  *    если в списке пунктов нет пункта со значением value - выбросит исключение
  */
 class Select extends HTMLSelectElement {
@@ -28,30 +28,52 @@ class Select extends HTMLSelectElement {
   static OPTION_NO__TEXT    = '- НЕТ -';
   static OPTION_NO__VALUE   = 0;
 
-  optionAny;  // Признак, что имеется пункт "любой"
-  optionNo;   // Признак, что имеется пункт "нет"
+  _optionAny = undefined;  // Признак, что имеется пункт "любой"
+  _optionNo = undefined;   // Признак, что имеется пункт "нет"
+  _optionList = undefined;    // Пункты
+  _initialValue = undefined;
 
-  constructor(options = [], value= null, optionNo = false, optionAny = false) {
-    super();
-    this.optionNo = optionNo;
-    this.optionAny = optionAny;
-    this.setOptions(options);
-    this.setValue(value);
+  set optionNo(optionNo) {
+    if (this._optionNo !== undefined) {
+      throw new Error('optionNo can only be assigned once');
+    }
+    this._optionNo = optionNo;
   }
 
-  setOptions(options) {
-    this.innerHTML = '';
-    if (this.optionNo ) this.options.add(new Option(Select.OPTION_NO__TEXT, Select.OPTION_NO__VALUE));
-    if (this.optionAny) this.options.add(new Option(Select.OPTION_ANY__TEXT, Select.OPTION_ANY__VALUE));
-    options.forEach(option => (this.options.add(new Option(option.text, option.value))));
+  set optionAny(optionAny) {
+    if (this._optionAny !== undefined) {
+      throw new Error('optionAny can only be assigned once');
+    }
+    this._optionAny = optionAny;
   }
 
-  setValue(value) {
-    this.value = value === null ? Select.OPTION_NO__VALUE : value;
-    if (this.selectedIndex === -1) {
-      throw new RangeError(`Can't set selected value = [${value}]: value does not exist in the options list`);
+  set optionList(optionList) {
+    if (this._optionList !== undefined) {
+      throw new Error('optionList can only be assigned once');
+    }
+    this._optionList = optionList;
+  }
+
+  set value(v) {
+    if (this._initialValue !== undefined) {
+      throw new Error('value can only be assigned once');
+    }
+    this._initialValue = v === null ? Select.OPTION_NO__VALUE : v;
+  }
+
+  connectedCallback() {
+    this.replaceChildren();
+    if (this._optionNo ) this.options.add(new Option(Select.OPTION_NO__TEXT, Select.OPTION_NO__VALUE));
+    if (this._optionAny) this.options.add(new Option(Select.OPTION_ANY__TEXT, Select.OPTION_ANY__VALUE));
+    this._optionList.forEach(option => (this.options.add(new Option(option.text, option.value))));
+    if (this._initialValue !== undefined) {
+      super.value = this._initialValue;
+      if (this.selectedIndex === -1) {
+        throw new RangeError(`Can't set selected value = [${this._initialValue}]: value does not exist in the options list`);
+      }
     }
   }
+
 }
 
 customElements.define('my-select', Select, { extends: 'select' });
