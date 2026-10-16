@@ -18,43 +18,62 @@
  */
 class Field extends HTMLElement {
 
-  title;
-  field;
+  _titleText = undefined;
+  _fieldElement = undefined;
+  _titleNode = undefined;
+  _fieldNode = undefined;
 
-  constructor(title, field = null) {
-    super();
-
-    this.classList.add('field');
-    this.title = document.createElement('p');
-    this.title.textContent =  `${title} :`;
-    this.append(this.title);
-    this.field = field ? field : document.createElement('p');
-    if (!field) {
-      this.field.textContent = '[null]';
+  set title(text) {
+    if (this._titleText !== undefined) {
+      throw new Error('title can only be assigned once');
     }
-    this.append(this.title, this.field);
+    this._titleText = text;
   }
 
-  setTitle(title) {
-    this.title.set({ textContent : `${title} :` });
+  set field(element) {
+    if (this._fieldElement !== undefined) {
+      throw new Error('field can only be assigned once');
+    }
+    this._fieldElement = element;
   }
 
-  setField(field) {
-    this.field.remove();
-    this.field = field;
-    this.append(this.field);
+  // Геттер value возвращает значение вложенного элемента (или null, если элемента нет)
+  get value() {
+    return this._fieldNode && this._fieldNode.value !== undefined ? this._fieldNode.value : null;
   }
 
   setCustomValidity(v) {
-    this.field.setCustomValidity(v);
+    // Проверяем наличие метода, чтобы не упасть, если внутри обычный параграф [null]
+    if (this._fieldNode && typeof this._fieldNode.setCustomValidity === 'function') {
+      this._fieldNode.setCustomValidity(v);
+    }
   }
 
   reportValidity() {
-    return this.field.reportValidity();
+    if (this._fieldNode && typeof this._fieldNode.reportValidity === 'function') {
+      return this._fieldNode.reportValidity();
+    }
+    return true; // Если элемент не поддерживает валидацию, считаем его валидным
   }
 
-  value() {
-    return this.field.value;
+  connectedCallback() {
+    this.classList.add('field');
+    this.replaceChildren();
+
+    // Создаем и добавляем заголовок
+    this._titleNode = document.createElement('p');
+    this._titleNode.classList.add('field__title');
+    this._titleNode.textContent = `${this._titleText || ''} :`;
+    this.append(this._titleNode);
+
+    // Создаем и добавляем тело поля
+    if (this._fieldElement) {
+      this._fieldNode = this._fieldElement;
+    } else {
+      this._fieldNode = document.createElement('p');
+      this._fieldNode.textContent = '[null]';
+    }
+    this.append(this._fieldNode);
   }
 
 }
