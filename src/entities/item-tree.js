@@ -2,7 +2,7 @@ class ItemTree extends Item {
 
   static init(source) {
     super.init(source);
-    this.poolFlat.forEach(item => {
+    this.pool.forEach(item => {
       if (item.data.PARENT !== 0) {
         this.get(item.data.PARENT).dataExt.children.set(item.data.ID, item);
       }
