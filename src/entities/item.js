@@ -1,5 +1,5 @@
 class Item {
-  static ITEM_TYPE  = 'ITEM';           // Тип сущности в дампе (сущности ITEM в дампе нет, она чисто абстрактная)
+  static DUMP_KEY  = 'ITEM';           // Тип сущности в дампе (сущности ITEM в дампе нет, она чисто абстрактная)
   static VIEW__SHOW = 'item-view';      // Тег кастомного элемента HTML - интерфейса для отображения сущности
   static VIEW__EDIT = 'item-edit-view'; // Тег кастомного элемента HTML - интерфейса для редактирования сущности
   static pool = new Map();          // Хранилище объектов (аналог таблицы БД)
@@ -13,7 +13,7 @@ class Item {
   static init(source) {
     this.maxId = 0;
     this.pool = new Map();
-    source[this.ITEM_TYPE].forEach((data) => {
+    source[this.DUMP_KEY].forEach((data) => {
       this.pool.set(data.ID, new this(data));
       if (data.ID > this.maxId) this.maxId = data.ID;
     });
@@ -32,7 +32,7 @@ class Item {
         item.data.ID = this.maxId;
         item.data.CREATED = nowWithMs();
         item.data.MODIFIED = item.data.CREATED;
-        Loader.data[this.ITEM_TYPE].push(item.data); // Включить новый объект в дамп
+        Loader.data[this.DUMP_KEY].push(item.data); // Включить новый объект в дамп
       }
       this.pool.set(item.data.ID, item);
     } else {

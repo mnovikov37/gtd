@@ -1,10 +1,15 @@
 class ItemTree extends Item {
+  static VIEW__SHOW = 'item-tree-view';      // Тег кастомного элемента HTML - интерфейса для отображения сущности
 
   static init(source) {
     super.init(source);
     this.pool.forEach(item => {
       if (item.data.PARENT !== 0) {
-        this.get(item.data.PARENT).dataExt.children.set(item.data.ID, item);
+        const parentItem = this.get(item.data.PARENT);
+        if (!parentItem) {
+          throw new ReferenceError(`Not found parent [${item.data.PARENT}] for ${this.name} [${item.data.ID}]`);
+        }
+        parentItem.dataExt.children.set(item.data.ID, item);
       }
     });
   }
