@@ -95,6 +95,8 @@ process_file() {
 # Функция рекурсивной сборки директории
 process_directory() {
     local dir_path="$1"
+    # ИГНОРИРУЕМ директорию копирования статики при сборке бандлов кода
+    [ "$dir_path" = "$SRC_DIR/shared/copy" ] && return
     local list_file="$dir_path/__build.lst"
 
     if [ -f "$list_file" ]; then
@@ -138,6 +140,29 @@ if [ -d "$SRC_DIR" ]; then
     else
         echo "Ошибка: Главный HTML-файл не найден по пути $HTML_SRC!"
         exit 1
+    fi
+
+    # === Копирование статики из src/shared/copy в out/shared ===
+    COPY_SRC_DIR="$SRC_DIR/shared/copy"
+    
+    # Делаем целевой путь абсолютным, чтобы cd не ломал относительную адресацию
+    mkdir -p "$DIST_DIR/shared"
+    COPY_DIST_DIR="$(cd "$DIST_DIR/shared" && pwd)"
+
+    if [ -d "$COPY_SRC_DIR" ]; then
+        echo "Копирование статических файлов из $COPY_SRC_DIR в $COPY_DIST_DIR..."
+        
+        (
+            cd "$COPY_SRC_DIR"
+            find . -type f | while IFS= read -r file_path; do
+                clean_path="${file_path#./}"
+                
+                # Теперь пути создаются и копируются по точному абсолютному адресу
+                mkdir -p "$COPY_DIST_DIR/$(dirname "$clean_path")"
+                cp "$clean_path" "$COPY_DIST_DIR/$clean_path"
+            done
+        )
+        echo "Статические файлы успешно скопированы."
     fi
 
     echo "Сборка успешно завершена"
