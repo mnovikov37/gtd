@@ -3,7 +3,6 @@ class ItemView extends HTMLDetailsElement {
   
   // ----- Элементы UI ----- //
   #uiTitle = null;
-  #uiNoteIcon = null;
   #uiNote = null;
   #uiDetails = null;
   
@@ -39,7 +38,6 @@ class ItemView extends HTMLDetailsElement {
 
     this.#uiTitle = null;
     this.#uiDetails = null;
-    this.#uiNoteIcon = null;
     this.#uiNote = null;
     
     // ----- summary ----- //
@@ -50,9 +48,6 @@ class ItemView extends HTMLDetailsElement {
     this.#uiTitle.textContent = this.#model.data.TITLE;
     // ----- note ----- //
     if (this.#model.data.NOTE !== undefined && this.#model.data.NOTE.trim() !== '') {
-      this.#uiNoteIcon = document.createElement('p');
-      this.#uiNoteIcon.classList.add('item__note-icon');
-      this.#uiNoteIcon.textContent = '📝';
       this.#uiNote = document.createElement('p');
       this.#uiNote.classList.add('item__note');
       this.#uiNote.textContent = this.#model.data.NOTE;
