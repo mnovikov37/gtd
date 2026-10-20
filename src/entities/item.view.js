@@ -3,6 +3,8 @@ class ItemView extends HTMLDetailsElement {
   
   // ----- Элементы UI ----- //
   #uiTitle = null;
+  #uiNoteIcon = null;
+  #uiNote = null;
   #uiDetails = null;
   
   constructor() {
@@ -30,18 +32,37 @@ class ItemView extends HTMLDetailsElement {
     if(!this.#model) {
       throw new Error('Cannot render without model');
     }
-    this.open = false;
+    if (this.open) {
+      super.open = false; 
+    }
     this.replaceChildren();
+
     this.#uiTitle = null;
     this.#uiDetails = null;
+    this.#uiNoteIcon = null;
+    this.#uiNote = null;
+    
     // ----- summary ----- //
     const summary = document.createElement('summary');
     // ----- title ----- //
     this.#uiTitle = document.createElement('p');
     this.#uiTitle.classList.add('item__title');
     this.#uiTitle.textContent = this.#model.data.TITLE;
+    // ----- note ----- //
+    if (this.#model.data.NOTE !== undefined && this.#model.data.NOTE.trim() !== '') {
+      this.#uiNoteIcon = document.createElement('p');
+      this.#uiNoteIcon.classList.add('item__note-icon');
+      this.#uiNoteIcon.textContent = '📝';
+      this.#uiNote = document.createElement('p');
+      this.#uiNote.classList.add('item__note');
+      this.#uiNote.textContent = this.#model.data.NOTE;
+      this.#uiNote.addEventListener('click', () => { this.#uiNote.classList.toggle('item__note_expanded') });
+    }
     // Собрать UI
     summary.append(this.#uiTitle);
+    if (this.#uiNote) {
+      summary.append(this.#uiNote);
+    }
     this.append(summary);
   }
 

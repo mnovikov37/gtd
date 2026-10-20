@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('shared/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *{
     margin: 0px;
     padding: 0px;

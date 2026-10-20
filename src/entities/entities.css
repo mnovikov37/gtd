@@ -16,7 +16,7 @@ details.item > summary {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-areas:  "ch tl tl tl tl tl tl tl tl tl tl tl"
-                        "ni nt nt nt nt nt nt nt nt nt rm dl";
+                        "nt nt nt nt nt nt nt nt nt nt nt nt";
   gap: 2px;
   cursor: pointer;
   list-style: none; /* Убирает дефолтный маркер в Chrome/Firefox */
@@ -88,21 +88,27 @@ white-space: nowrap; Не дает тексту переноситься, есл
   border-radius: 50%;
 }
 
-.task__note-icon {
+.item__note-icon {
   grid-area: ni;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.task__note {
+.item__note {
+  background-color: white;
+  border-radius: 3px;
   grid-area: nt;
-  border-style: none;
   padding: 2px;
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  box-sizing: border-box;
-  text-align: left;
-  font-style: italic;
+  min-width: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;      /* Запрещаем тексту переноситься на новую строку */
+  overflow: hidden;         /* Прячем всё, что выходит за пределы элемента */
+  text-overflow: ellipsis;  /* Добавляем троеточие в конце */
+}
+
+.item__note_expanded {
+  white-space: pre-wrap;
+  overflow: visible;
 }
