@@ -3,6 +3,7 @@ class ItemView extends HTMLDetailsElement {
   #isInitialized = false; // Флаг, чтобы избежать повторного рендера при перемещении в DOM
   
   // ----- Элементы UI ----- //
+  #uiSummary = null;
   #uiTitle = null;
   #uiNote = null;
   #uiDetails = null;
@@ -27,6 +28,14 @@ class ItemView extends HTMLDetailsElement {
     }
   }
 
+  get uiSummary() {
+    return this.#uiSummary;
+  }
+
+  get uiTitle() {
+    return this.#uiTitle;
+  }
+
   get model() {
     return this.#model;
   }
@@ -47,28 +56,27 @@ class ItemView extends HTMLDetailsElement {
     this.replaceChildren();
 
     // Сбрасываем ссылки на UI элементы
-    this.#uiTitle = null;
     this.#uiDetails = null;
     this.#uiNote = null;
     
     // ----- summary ----- //
-    const summary = document.createElement('summary');
+    this.#uiSummary = document.createElement('summary');
     
     // ----- title ----- //
     this.#uiTitle = document.createElement('p');
     this.#uiTitle.classList.add('item__title');
     this.#uiTitle.textContent = this.#model.data.TITLE;
-    summary.append(this.#uiTitle);
+    this.#uiSummary.append(this.#uiTitle);
     
     // ----- note ----- //
     if (this.#model.data.NOTE !== undefined && this.#model.data.NOTE.trim() !== '') {
       this.#uiNote = document.createElement('p');
       this.#uiNote.classList.add('item__note');
       this.#uiNote.textContent = this.#model.data.NOTE;
-      summary.append(this.#uiNote);
+      this.#uiSummary.append(this.#uiNote);
     }
     
-    this.append(summary);
+    this.append(this.#uiSummary);
 
     // Если компонент рендерится уже открытым, сразу создаем детали
     if (this.open) {

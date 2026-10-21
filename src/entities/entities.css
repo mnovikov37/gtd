@@ -27,11 +27,6 @@ details.item > summary::-webkit-details-marker {
   display: none;
 }
 
-.item__header_checked {
-  color: gray;
-  text-decoration: line-through;
-}
-
 .item__title {
   grid-area: tl;
   padding-left: 2px;
@@ -39,12 +34,10 @@ details.item > summary::-webkit-details-marker {
   text-align: left;
 }
 
-/*
-Для note:
-white-space: nowrap; Не дает тексту переноситься, если нужен строгий однострочник
-  overflow: hidden;
-  text-overflow: ellipsis; Красивое троеточие, если заголовок слишком длинный
-*/
+.item__title_checked {
+  color: gray;
+  text-decoration: line-through;
+}
 
 .item__save {
   grid-area: sv;
@@ -77,22 +70,17 @@ white-space: nowrap; Не дает тексту переноситься, есл
 
 
 .task__check {
-  grid-area: ch;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 14px;
+  height: 14px;
+
+  /* СТРОГО ОБЯЗАТЕЛЬНО: запрещаем гриду растягивать элемент по вертикали и горизонтали */
+  align-self: center;   /* Центрирует по вертикали, предотвращая растяжение по высоте */
+  justify-self: center; /* Центрирует по горизонтали, предотвращая растяжение по ширине */
 }
 
 .task__check_type_list-item {
   background-color: gray;
   border-radius: 50%;
-}
-
-.item__note-icon {
-  grid-area: ni;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .item__note {
