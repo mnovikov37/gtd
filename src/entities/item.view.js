@@ -113,7 +113,9 @@ class ItemView extends HTMLDetailsElement {
     if (noteElement) {
       e.preventDefault(); // Сбросить дефолтное поведение клика - иначе развернёт всю карточку сущности, а не только заметку
       e.stopPropagation(); // Предотвращаем нативное открытие/закрытие <details>
-      noteElement.classList.toggle('item__note_expanded');
+      if (window.getSelection().toString().length === 0) {
+        noteElement.classList.toggle('item__note_expanded');
+      }
     }
   }
 
