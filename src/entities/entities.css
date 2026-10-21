@@ -1,4 +1,4 @@
-details.item {
+.item {
   content-visibility: auto;
   display: block;
   max-width: 500px;
@@ -10,7 +10,7 @@ details.item {
   border-radius: 5px;
   text-align: left;
   font-size: 1rem;
-  background-color:beige;
+  background-color:rgb(247, 247, 231);
 }
 
 details.item > summary {
@@ -69,6 +69,10 @@ details.item > summary::-webkit-details-marker {
   border-radius: 3px;
 }
 
+.checklist-item {
+  background-color: #c8d8e4;
+}
+
 
 .task__check {
   width: 14px;
@@ -86,6 +90,7 @@ details.item > summary::-webkit-details-marker {
 
 .item__note {
   background-color: white;
+  color: #000;
   border-radius: 3px;
   grid-area: nt;
   padding: 2px;

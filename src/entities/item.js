@@ -1,13 +1,13 @@
 class Item {
   static DUMP_KEY  = 'ITEM';           // Тип сущности в дампе (сущности ITEM в дампе нет, она чисто абстрактная)
-  static VIEW__SHOW = 'item-view';      // Тег кастомного элемента HTML - интерфейса для отображения сущности
   static VIEW__EDIT = 'item-edit-view'; // Тег кастомного элемента HTML - интерфейса для редактирования сущности
   static pool = new Map();          // Хранилище объектов (аналог таблицы БД)
   static maxId = 0;                     // Надо помнить максимальный ID в пуле сущностей
 
-  data;     // Данные из дампа, которые пойдут обратно в дамп
-  dataExt;  // Дополнительные рантайм-данные приложения. В дамп не идут
-  #ui;      // Пользовательский интерфейс
+  data;               // Данные из дампа, которые пойдут обратно в дамп
+  dataExt;            // Дополнительные рантайм-данные приложения. В дамп не идут
+  view = 'item-view'  // Тег кастомного элемента HTML - интерфейса для отображения сущности
+  #ui;                // Пользовательский интерфейс
 
   // Заполнение пула объектов из исходного дампа
   static init(source) {
@@ -55,7 +55,7 @@ class Item {
 
   get ui() {
     if (!this.#ui) {
-      this.#ui = document.createElement('details', { is: this.constructor.VIEW__SHOW });
+      this.#ui = document.createElement('details', { is: this.view });
       this.#ui.init(this);
     }
     return this.#ui;

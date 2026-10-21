@@ -1,9 +1,9 @@
 class Task extends ItemTree {
   static DUMP_KEY  = 'TASK';       // Ключ сущности в дампе данных
-  static VIEW__SHOW = 'task-view';  // На текущем этапе используем базовый интерфейс
 
   constructor(data) {
     super(data);
+    this.view = TaskType.get(data.TYPE).data.VIEW; // Выбрать UI в зависимости от типа сущности
   }
 
 }
