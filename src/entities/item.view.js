@@ -1,7 +1,4 @@
-class ItemView extends HTMLDetailsElement {
-  #model = null; // Ссылка на связанную модель данных
-  #isInitialized = false; // Флаг, чтобы избежать повторного рендера при перемещении в DOM
-  
+class ItemView extends withNodeView(HTMLDetailsElement) {
   // ----- Элементы UI ----- //
   #uiSummary = null;
   #uiTitle = null;
@@ -17,17 +14,6 @@ class ItemView extends HTMLDetailsElement {
     this.addEventListener('click', (e) => this.#handleCanvasClick(e));
   }
 
-  init(model) {
-    if (this.#model) {
-      throw new TypeError('Reinitialization is prohibited');
-    }
-    this.#model = model;
-    // Если элемент уже был добавлен в DOM до вызова init, запускаем рендер
-    if (this.isConnected && !this.#isInitialized) {
-      this.render();
-    }
-  }
-
   get uiSummary() {
     return this.#uiSummary;
   }
@@ -36,24 +22,9 @@ class ItemView extends HTMLDetailsElement {
     return this.#uiTitle;
   }
 
-  get model() {
-    return this.#model;
-  }
-
-  connectedCallback() {
-      // Рендерим только если есть модель и элемент еще не был инициализирован
-      if (this.#model && !this.#isInitialized) {
-          this.render();
-      }
-  }
 
   render() {
-    if (!this.#model) {
-      throw new Error('Cannot render without model');
-    }
-
-    this.#isInitialized = true;
-    this.replaceChildren();
+    super.render()
 
     // Сбрасываем ссылки на UI элементы
     this.#uiDetails = null;
@@ -65,14 +36,14 @@ class ItemView extends HTMLDetailsElement {
     // ----- title ----- //
     this.#uiTitle = document.createElement('p');
     this.#uiTitle.classList.add('item__title');
-    this.#uiTitle.textContent = this.#model.data.TITLE;
+    this.#uiTitle.textContent = this.model.data.TITLE;
     this.#uiSummary.append(this.#uiTitle);
     
     // ----- note ----- //
-    if (this.#model.data.NOTE !== undefined && this.#model.data.NOTE.trim() !== '') {
+    if (this.model.data.NOTE !== undefined && this.model.data.NOTE.trim() !== '') {
       this.#uiNote = document.createElement('p');
       this.#uiNote.classList.add('item__note');
-      this.#uiNote.textContent = this.#model.data.NOTE;
+      this.#uiNote.textContent = this.model.data.NOTE;
       this.#uiSummary.append(this.#uiNote);
     }
     

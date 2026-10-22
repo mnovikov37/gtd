@@ -1,5 +1,6 @@
-class Item {
+class Item extends Node {
   static DUMP_KEY  = 'ITEM';           // Тип сущности в дампе (сущности ITEM в дампе нет, она чисто абстрактная)
+  static VIEW__ELEMENT = 'details';    // На базе какого HTML элемента будет строиться интерфейс
   static VIEW__EDIT = 'item-edit-view'; // Тег кастомного элемента HTML - интерфейса для редактирования сущности
   static pool = new Map();          // Хранилище объектов (аналог таблицы БД)
   static maxId = 0;                     // Надо помнить максимальный ID в пуле сущностей
@@ -50,22 +51,8 @@ class Item {
   }
 
   constructor(data) {
+    super();
     this.data = data;
-  }
-
-  get ui() {
-    if (!this.#ui) {
-      this.#ui = document.createElement('details', { is: this.view });
-      this.#ui.init(this);
-    }
-    return this.#ui;
-  }
-
-  destroyUi() {
-    if (this.#ui) {
-      this.#ui.remove();
-      this.#ui = null;
-    }
   }
 
 }
