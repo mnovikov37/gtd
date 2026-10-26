@@ -1,114 +1,92 @@
-// @build-ignore
-class Kanban extends DOMElement {
+class Kanban extends Node {
 
-  static FOLDERS = [
-    { ID: 2, TITLE: "ВХОДЯЩЕЕ"         },
-    { ID: 1, TITLE: "СЕЙЧАС"           },
-    { ID: 3, TITLE: "ПОЗЖЕ"            },
-    { ID: 4, TITLE: "НА ЧУЖОЙ СТОРОНЕ" },
-    { ID: 7, TITLE: "АРХИВ" }
-  ];
+  view = 'kanban-view';
+  #projectId = Select.OPTION_ANY__VALUE;
 
-  static FILTER_EVENT = 'KANBAN__FILTER_CHANGE';
-
-  filter;
-
-  constructor() {
-    super();
-
-    this.filter = new Filter(this.constructor.FILTER_EVENT);
-
-    this.ui.addClass('kanban');
-    this.ui.addEventListener(this.constructor.FILTER_EVENT, (e) => {
-      this.updateUI();
-    });
-    this.ui.addEventListener(Item.EVENT__SAVE, (e) => {
-      this.updateUI();
-    }, true)
-    this.ui.titles = new E('div').addClass('kanban__folders');
-      this.constructor.FOLDERS.forEach(folder => {
-        this.ui.titles.append(new E('p').set({ textContent : folder.TITLE }).addClass('kanban__folder_title'));
-      });
-
-    this.ui.content = new E('div').addClass('kanban__content');
-
-    this.ui.append(this.filter.render(), this.ui.titles, this.ui.content);
+  get titles() {
+    return KANBAN__FOLDERS.map(folder => folder.TITLE);
   }
 
-  renderFolder(tasks) {
-    const result = new E('div');
+  get data() {
+    const data = [];
 
-    const renderedTasks = new Map([...tasks.entries()].sort((a, b) => {
-      return (b[1].completed() - a[1].completed())
-      || ((a[1].dueDate() === "") - (b[1].dueDate() === ""))
-      || (a[1].dueDate().localeCompare(b[1].dueDate())
-      || (a[1].data.TITLE.localeCompare(b[1].data.TITLE)));
-    }));
+    const rootProjects = [];
 
-    let currentDate = "ABC";
-    
-    renderedTasks.forEach((task) => {
-      const dueDate = task.dueDate();
-      if (dueDate !== currentDate) {
-        result.append(new E('p').set({ textContent : dueDate === "" ? "Без даты" : dueDate }));
-        currentDate = dueDate;
+    if (this.#projectId != Select.OPTION_NO__VALUE && this.#projectId != Select.OPTION_ANY__VALUE) {
+      const rootProject = Task.get(this.#projectId);
+      if (rootProject.data.TYPE != 1) {
+        throw new TypeError(`Task "${rootProject.data.TITLE}" is not a Project`);
       }
-      let viewElement;
-      if (taskModel.data.TYPE === ChecklistModel.TYPE) {
-        viewElement = new ChecklistView(taskModel);
-      } else {
-        viewElement = new TaskView(taskModel);
-      }
-      // viewElement — это чистый HTMLElement, пушим напрямую в DOM
-      result.append(viewElement);
-    });
- 
-    return result;
-  }
-
-  renderFolders(tasks) {
-    console.log(tasks);
-    const result = new E('div').addClass('kanban__folders');
-    this.constructor.FOLDERS.forEach(folder => {
-      console.log(Folder.filterCondition(folder.ID));
-      console.log(filterMap(tasks, [Folder.filterCondition(folder.ID)]));
-      result.append(this.renderFolder(filterMap(tasks, [Folder.filterCondition(folder.ID)])));
-    });
-    return result;
-  }
-
-  renderFoldersFromAttributes(tasks, attrs) {
-    const conditions = [];
-    /*
-    if (attrs.goal) { conditions.push(Goal.filterCondition(attrs.goal)); }
-    if (attrs.project) { conditions.push(Project.filterCondition(attrs.project)); }
-    if (attrs.context) { conditions.push(Context.filterCondition(attrs.context)); }
-    */
-    const result = this.renderFolders(tasks);
-    return result;
-  }
-
-
-  updateUI() {
-    this.ui.content.clear();
-    const f = this.filter.filter;
-    const conditions = [/*{ p : 'data.TYPE', v: 2 }*/];
-    let optionProject = null;
-    if (f.goal !== Select.OPTION_ANY__VALUE) conditions.push(Goal.filterCondition(f.goal, true));           // Цели сущность иерархическая
-    if (f.project !== Select.OPTION_ANY__VALUE) {
-      conditions.push(Project.filterCondition(f.project, true));  // Проекты сущность иерархическая
-      optionProject = Project.makeSelectOptionForId(f.project)
+      rootProjects.push(rootProject);
     }
-    if (f.context !== Select.OPTION_ANY__VALUE) conditions.push(Context.filterCondition(f.context));        // Контексты сущность НЕ иерархическая
-    const tasks = new Map([...Task.filter(conditions), ...Checklist.filter(conditions)]);
-    console.log(tasks);
-    this.ui.content.append(new E('p').addClass('kanban__project_title').set({ textContent : optionProject?.title }));
-    const foldersUi = this.renderFoldersFromAttributes(tasks, { project : optionProject?.value });
-    this.ui.content.append(foldersUi);
-    optionProject?.children?.forEach(c => {
-      this.ui.content.append(new E('p').addClass('kanban__project_title').set({ textContent : `${optionProject?.title} >> ${c.title}` }));
-      const foldersUi = this.renderFoldersFromAttributes(tasks, { project : c.value });
-      this.ui.content.append(foldersUi);
+
+    if (this.#projectId === Select.OPTION_NO__VALUE) {
+      rootProjects.push({ data: { ID: this.#projectId, TITLE: 'Без проекта' }, children: [] });
+    }
+
+    if (this.#projectId === Select.OPTION_ANY__VALUE) {
+      rootProjects.push({ data: { ID: this.#projectId, TITLE: 'Все проекты' }, children: [] });
+      rootProjects.push(...Task.filter([ { p: 'data.PARENT', v: Select.OPTION_NO__VALUE }, { p: 'data.TYPE', v: 1 } ]).values());
+    }
+
+    rootProjects.forEach(project => {
+      data.push(...this.#getProject(project));
     });
+    data.push(...this.#getNotebooks());
+
+    return data;
   }
+
+  #getProject(project, prefix = '') {
+    const result = [{
+      ID: project.data.ID,
+      TITLE: prefix + '\u00A0' + project.data.TITLE,
+      FOLDERS: this.#getFolders(project.data.ID)
+    }]
+    project.children.forEach(child => {
+      if (child.data.TYPE === TaskType.TASK_TYPE__PROJECT) {
+        result.push(...this.#getProject(child, prefix + '\u00A0-\u00A0-'));
+      }
+    });
+    return result;
+  }
+
+  #getFolders(projectId) {
+    const folders = [];
+    KANBAN__FOLDERS.forEach(folder => {
+      folders.push(this.#getTasks(folder.ID, projectId));
+    })
+    return folders;
+  }
+
+  #getTasks(folderId, projectId) {
+    const filterTasks = [ { p: 'data.FOLDER', v: folderId }, { p: 'data.TYPE', v: [0, 2] }, { p: 'data.PARENT', v: projectId } ];
+    const tasks = Array.from(Task.filter(filterTasks).values());
+    tasks.sort((a, b) => {
+      return ((b.data.COMPLETED !== "") - (a.data.COMPLETED !== ""))
+      || ((a.data.DUE_DATE === "") - (b.data.DUE_DATE === ""))
+      || (a.data.DUE_DATE.localeCompare(b.data.DUE_DATE)
+      || (a.data.TITLE.localeCompare(b.data.TITLE)));
+    })
+    return tasks;
+  }
+
+  #getNotebooks() {
+    const folders = [];
+    KANBAN__FOLDERS.forEach(folder => {
+      const notebooks = Array.from(Notebook.filter([{ p: 'data.FOLDER_ID', v: folder.ID }]).values());
+      notebooks.sort((a, b) => { return (a.data.TITLE.localeCompare(b.data.TITLE)); })
+      folders.push(notebooks);
+    });
+    return [{
+      ID: 0,
+      TITLE: "\u00A0Заметки (не имеют проекта)",
+      FOLDERS: folders
+    }]
+  }
+
+  set projectId(id) {
+    this.#projectId = id;
+  }
+
 }

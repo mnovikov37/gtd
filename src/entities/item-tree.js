@@ -5,7 +5,6 @@ class ItemTree extends Item {
   }
 
   get children() {
-    console.log(this.childrenFilter);
     const result = this.constructor.filter(this.childrenFilter);
     return new Map([...result.entries()].sort((a, b) => (a[1].data.TITLE.localeCompare(b[1].data.TITLE))));
   }
