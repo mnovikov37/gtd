@@ -1,11 +1,40 @@
 class TaskType extends Item {
   static DUMP_KEY  = 'TYPE';  // Ключ сущности в дампе данных
 
+  static get TASK_TYPE__TASK()           { return 0 }
+  static get TASK_TYPE__PROJECT()        { return 1 }
+  static get TASK_TYPE__CHECKLIST()      { return 2 }
+  static get TASK_TYPE__CHECKLIST_ITEM() { return 3 }
+
   static pool = new Map([
-    [  0, new TaskType({ ID :  0, TITLE : 'Задача'        , VIEW: 'task-view'           }) ],
-    [  1, new TaskType({ ID :  1, TITLE : 'Проект'        , VIEW: 'project-view'        }) ],
-    [  2, new TaskType({ ID :  2, TITLE : 'Чеклист'       , VIEW: 'checklist-view'      }) ],
-    [  3, new TaskType({ ID :  3, TITLE : 'Пункт чеклиста', VIEW: 'checklist-item-view' }) ]
+    [
+      this.TASK_TYPE__TASK, new TaskType({
+      ID             : this.TASK_TYPE__TASK,
+      TITLE          : 'Задача',
+      VIEW           : 'task-view',
+      CHILDREN_TYPES : []
+    })],
+    [
+      this.TASK_TYPE__PROJECT, new TaskType({
+      ID             : this.TASK_TYPE__PROJECT,
+      TITLE          : 'Проект',
+      VIEW           : 'project-view',
+      CHILDREN_TYPES : [ this.TASK_TYPE__PROJECT, this.TASK_TYPE__TASK ]
+    })],
+    [
+      this.TASK_TYPE__CHECKLIST, new TaskType({
+      ID             : this.TASK_TYPE__CHECKLIST,
+      TITLE          : 'Чеклист',
+      VIEW           : 'checklist-view',
+      CHILDREN_TYPES : [ this.TASK_TYPE__CHECKLIST_ITEM ]
+    })],
+    [
+      this.TASK_TYPE__CHECKLIST_ITEM, new TaskType({
+      ID             : this.TASK_TYPE__CHECKLIST_ITEM,
+      TITLE          : 'Пункт чеклиста',
+      VIEW           : 'checklist-item-view',
+      CHILDREN_TYPES : []
+    })]
   ]);
 
 }
