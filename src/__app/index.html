@@ -11,6 +11,13 @@
 </body>
 
 <script>
+  // Включаем перехват закрытия/обновления страницы
+  window.addEventListener('beforeunload', function (e) {
+    // Отменяем стандартное поведение (необходимо для некоторых браузеров)
+    e.preventDefault();
+    // Установка returnValue активирует системное окно подтверждения
+    e.returnValue = ''; 
+  });
   new Loader();
 </script>
 
